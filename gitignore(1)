@@ -1,0 +1,34 @@
+# Závislosti
+node_modules/
+
+# Konfigurace a tajné údaje
+.env
+.env.*
+!.env.example
+
+# Logy
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vygenerované dokumenty a archivy
+*.pdf
+*.zip
+*.rar
+output/
+exports/
+tmp/
+temp/
+
+# Systémové soubory
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Testovací lokální data s možnými osobními údaji
+test-data/private/
+data/private/

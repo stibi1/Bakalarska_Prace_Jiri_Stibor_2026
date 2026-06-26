@@ -1,0 +1,20 @@
+# ------------------------------------------------------------
+# PDF Template Editor - vzor konfigurace
+# ------------------------------------------------------------
+# Tento soubor zkopírujte jako .env a doplňte skutečné hodnoty.
+# Soubor .env nikdy neukládejte do veřejného repozitáře.
+
+# Režim aplikace
+NODE_ENV=production
+
+# Express server
+# Pro produkci za Nginx ponechte 127.0.0.1.
+# Pro test v lokální síti lze dočasně použít 0.0.0.0.
+HOST=127.0.0.1
+PORT=3000
+
+# Microsoft Entra / Microsoft Graph
+# Potřebné pro e-mailové odesílání přes /users/{senderEmail}/sendMail.
+ENTRA_CLIENT_ID=00000000-0000-0000-0000-000000000000
+ENTRA_CLIENT_SECRET=sem-patri-client-secret
+ENTRA_TENANT_ID=00000000-0000-0000-0000-000000000000
