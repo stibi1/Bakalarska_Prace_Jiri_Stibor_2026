@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF template editor</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <h1>MSV Faktury</h1>
+  <p class="muted">
+    MVP editor pro A4 šablony. Podporuje text, obdélník, čáru a image placeholder.
+  </p>
+
+  <div class="page">
+    <div class="sidebar">
+      <div class="section">
+        <h3>Nastavení stránky</h3>
+
+        <label for="orientation">Orientace</label>
+        <select id="orientation">
+          <option value="portrait">Na výšku</option>
+          <option value="landscape">Na šířku</option>
+        </select>
+
+        <button id="btnNewTemplate">Nová šablona</button>
+        <button id="btnDownloadTemplate">Uložit šablonu</button>
+        <button id="btnPickImageFolder" type="button">Vybrat složku s obrázky</button>
+
+        <label for="templateFile">Nahrát šablonu</label>
+        <input type="file" id="templateFile" accept=".json">
+      </div>
+
+      <div class="section">
+        <h3>Přidat prvek</h3>
+
+        <div class="toolbar">
+          <button id="btnAddText">Text</button>
+          <button id="btnAddRect">Obdélník</button>
+          <button id="btnAddLine">Čára</button>
+          <button id="btnAddImage">Obrázek</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Vybraný prvek</h3>
+
+        <label for="elType">Typ</label>
+        <input type="text" id="elType" readonly>
+
+        <div class="row">
+          <div>
+            <label for="elX">Pozice X</label>
+            <input type="number" id="elX">
+          </div>
+          <div>
+            <label for="elY">Pozice Y</label>
+            <input type="number" id="elY">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="elW">Šířka / X2</label>
+            <input type="number" id="elW">
+          </div>
+          <div>
+            <label for="elH">Výška / Y2</label>
+            <input type="number" id="elH">
+          </div>
+        </div>
+        <button id="btnBold">B</button>
+        <label for="elText">Text</label>
+        <textarea id="elText" rows="4"></textarea>
+
+        <label for="elFontSize">Velikost fontu</label>
+        <input type="number" id="elFontSize" value="12">
+
+        <label>Zarovnání textu</label>
+        <div id="alignButtons" class="align-buttons">
+          <button type="button" class="align-btn" data-align="left" title="Zarovnat vlevo">
+            <span class="align-icon align-left"></span>
+          </button>
+        
+          <button type="button" class="align-btn" data-align="center" title="Zarovnat na střed">
+            <span class="align-icon align-center"></span>
+          </button>
+        
+          <button type="button" class="align-btn" data-align="right" title="Zarovnat vpravo">
+            <span class="align-icon align-right"></span>
+          </button>
+        </div>
+
+        <label for="elColor">Barva</label>
+        <input type="text" id="elColor" value="#000000">
+
+        <button id="btnApplyChanges">Použít změny</button>
+        <button id="btnDeleteElement">Smazat prvek</button>
+      </div>
+
+      <div class="section">
+        <h3>Data</h3>
+        <label for="dataFile">Nahrát CSV / JSON / XLSX</label>
+        <input type="file" id="dataFile" accept=".csv,.json,.xlsx,.xls">
+        <button id="btnUploadData">Načíst data</button>
+        <div id="dataMeta" class="small"></div>
+        <div id="dataError" class="error"></div>
+      </div>
+
+      <div class="section">
+        <h3>Export PDF</h3>
+        <p class="small">
+          Obrázky vložené do šablony se použijí automaticky. Pokud po načtení šablony chybí,
+          klikni na „Vybrat složku s obrázky“.
+        </p>
+      
+        <label for="fileNamePattern">Názvy souborů při stažení ZIP</label>
+        <input
+          type="text"
+          id="fileNamePattern"
+          value="Faktura č {{col_0}}"
+          placeholder="Např. Faktura č {{col_0}}"
+        >
+        <p class="small">
+          Každý záznam vytvoří samostatné PDF. Název může používat placeholdery z dat.
+        </p>
+      
+        <div id="imageInputs"></div>
+      
+        <button id="btnGeneratePdf">Vygenerovat PDF</button>
+        <div id="generateStatus"></div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="editorCanvas" width="595" height="842"></canvas>
+
+      <div class="table-wrap">
+        <table id="previewTable"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="pdfPreviewModal" class="modal hidden">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>Náhled PDF</h3>
+        <div class="modal-actions">
+          <button id="btnOpenEmailModal" type="button">Poslat e-maily</button>
+          <button id="btnDownloadPreviewPdf" type="button">Stáhnout 1 PDF</button>
+          <button id="btnDownloadZipPdf" type="button">Stáhnout ZIP</button>
+          <button id="btnClosePdfPreview" type="button">Zavřít</button>
+        </div>
+      </div>
+  
+      <div class="modal-body">
+        <iframe id="pdfPreviewFrame" title="PDF preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div id="emailModal" class="modal hidden">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>Odeslání e-mailů</h3>
+        <div class="modal-actions">
+          <button id="btnCloseEmailModal" type="button">Zavřít</button>
+        </div>
+      </div>
+  
+      <div class="modal-body email-modal-body">
+        <div class="email-form-grid">
+          <label for="senderEmail">Od:</label>
+          <input type="text" id="senderEmail" value="lenka.stiborova@knihovnauk.cz">
+  
+          <label for="emailSubject">Předmět:</label>
+          <input type="text" id="emailSubject" value="Faktura za MVS">
+  
+          <label for="emailBody">Text:</label>
+          <textarea id="emailBody" rows="10">Dobrý den,
+  
+  v příloze vám zasíláme fakturu.
+  
+  S pozdravem
+  Knihovna Ústeckého kraje</textarea>
+        </div>
+  
+        <div class="email-modal-actions">
+          <button id="btnSendEmails" type="button">Poslat</button>
+        </div>
+  
+        <div id="mailLoadingBar" class="mail-loading-bar"></div>
+        <div id="mailStatus" class="small"></div>
+  
+        <div id="failedInvoiceWrapper" class="failed-invoice-wrapper">
+          <p id="failedInvoices"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input
+  type="file"
+  id="imagePicker"
+  accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+  hidden
+>
+
+<input
+  type="file"
+  id="imageFolderPicker"
+  webkitdirectory
+  directory
+  multiple
+  hidden
+>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hypher@0.2.5/dist/jquery.hypher.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bramstein/hyphenation-patterns@master/dist/browser/cs.js"></script>
+
+<script>
+  window.czechHyphenator = null;
+
+  window.addEventListener("load", () => {
+    if (window.Hypher?.languages?.cs) {
+      window.czechHyphenator = window.Hypher.languages.cs;
+    } else {
+      console.warn("Hyphenation nebyla inicializována.", {
+        jQuery: window.jQuery,
+        Hypher: window.Hypher,
+        languages: window.Hypher?.languages
+      });
+    }
+  });
+</script>
+
+<script src="/app.js"></script>
+</body>
+</html>

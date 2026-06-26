@@ -1,0 +1,29 @@
+{
+  "name": "knihovna",
+  "version": "1.0.0",
+  "main": "src/lib/index.js",
+  "type": "module",
+"scripts": {
+  "start": "node server.js"
+},
+"engines": {
+  "node": ">=18"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Webový nástroj pro tvorbu PDF šablon a generování PDF z dat",
+  "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "csv-parse": "^6.2.0",
+    "express": "^5.2.1",
+    "hyphenation.cs": "^0.2.1",
+    "hypher": "^0.2.5",
+    "jszip": "^3.10.1",
+    "multer": "^2.1.1",
+    "pdf-lib": "^1.17.1",
+    "xlsx": "^0.18.5",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "isomorphic-fetch": "^3.0.0"
+  }
+}
