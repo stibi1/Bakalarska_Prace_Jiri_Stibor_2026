@@ -79,6 +79,12 @@ const btnDownloadZipPdf = document.getElementById("btnDownloadZipPdf");
 const fileNamePatternInput = document.getElementById("fileNamePattern");
 const btnOpenEmailModal = document.getElementById("btnOpenEmailModal");
 
+// Prvky modalu s uživatelským návodem.
+// Modal je pouze informační, nemění žádný stav šablony ani dat.
+const helpModal = document.getElementById("helpModal");
+const btnOpenHelpModal = document.getElementById("btnOpenHelpModal");
+const btnCloseHelpModal = document.getElementById("btnCloseHelpModal");
+
 // Prvky e-mailového modalu a jeho formuláře.
 const emailModal = document.getElementById("emailModal");
 const btnCloseEmailModal = document.getElementById("btnCloseEmailModal");
@@ -169,6 +175,29 @@ function getSelectedElement() {
  */
 function setSelectedElement(id) {
   state.selectedElementId = id;
+  syncSelectedElementForm();
+  renderCanvas();
+}
+
+/**
+ * Posune aktuálně vybraný prvek o zadaný počet bodů v canvasu.
+ * Používají ho nová tlačítka šipek v levém panelu.
+ * U čáry se musí posunout začátek i konec, aby se neposunul jen jeden bod čáry.
+ */
+function moveSelectedElementBy(dx, dy) {
+  const element = getSelectedElement();
+  if (!element) return;
+
+  if (element.type === "line") {
+    element.x1 += dx;
+    element.y1 += dy;
+    element.x2 += dx;
+    element.y2 += dy;
+  } else {
+    element.x += dx;
+    element.y += dy;
+  }
+
   syncSelectedElementForm();
   renderCanvas();
 }
@@ -594,6 +623,21 @@ function closePdfPreviewModal() {
     URL.revokeObjectURL(currentPreviewPdfUrl);
     currentPreviewPdfUrl = null;
   }
+}
+
+/**
+ * Otevře modal s krátkým uživatelským návodem.
+ * Návod je čistě informační, proto se zde nemění data ani šablona.
+ */
+function openHelpModal() {
+  helpModal.classList.remove("hidden");
+}
+
+/**
+ * Zavře modal s uživatelským návodem.
+ */
+function closeHelpModal() {
+  helpModal.classList.add("hidden");
 }
 
 /**
@@ -1104,6 +1148,12 @@ window.addEventListener("keydown", event => {
     return;
   }
 
+  if (event.key === "Escape" && !helpModal.classList.contains("hidden")) {
+    closeHelpModal();
+    event.preventDefault();
+    return;
+  }
+
   if (event.key === "Escape" && !emailModal.classList.contains("hidden")) {
     closeEmailModal();
     event.preventDefault();
@@ -1197,6 +1247,23 @@ window.addEventListener("keydown", event => {
     syncSelectedElementForm();
     renderCanvas();
     event.preventDefault();
+  }
+});
+
+// Otevření uživatelského návodu tlačítkem s otazníkem.
+btnOpenHelpModal.addEventListener("click", () => {
+  openHelpModal();
+});
+
+// Zavření uživatelského návodu tlačítkem v modalu.
+btnCloseHelpModal.addEventListener("click", () => {
+  closeHelpModal();
+});
+
+// Zavření uživatelského návodu kliknutím mimo obsah modalu.
+helpModal.addEventListener("click", event => {
+  if (event.target === helpModal) {
+    closeHelpModal();
   }
 });
 
@@ -1497,6 +1564,79 @@ imageFolderPickerInput.addEventListener("change", async () => {
 // ------------------------------------------------------------
 // ÚPRAVY ELEMENTU
 // ------------------------------------------------------------
+
+// Tlačítka šipek posouvají vybraný prvek o 1 bod daným směrem.
+// Když uživatel tlačítko jen klikne, provede se jeden posun.
+// Když ho podrží, po krátké prodlevě se spustí opakovaný posun.
+const moveButtonSettings = [
+  ["btnMoveUp", 0, -1],
+  ["btnMoveDown", 0, 1],
+  ["btnMoveLeft", -1, 0],
+  ["btnMoveRight", 1, 0]
+];
+
+// Prodleva před spuštěním souvislého posouvání.
+// Díky tomu běžné kliknutí stále působí jako přesný posun o jeden bod.
+const MOVE_HOLD_DELAY_MS = 250;
+
+// Rychlost opakovaného posouvání při podržení tlačítka.
+// Nižší hodnota znamená rychlejší posun. Jeden krok pořád odpovídá 1 bodu.
+const MOVE_HOLD_INTERVAL_MS = 40;
+
+/**
+ * Napojí jedno tlačítko šipky na posun prvku.
+ * Funkce řeší jak krátké kliknutí, tak držení tlačítka myší, perem nebo dotykem.
+ */
+function registerMoveButton(buttonId, dx, dy) {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+
+  let holdDelayId = null;
+  let holdIntervalId = null;
+
+  // Zastaví čekání i případný běžící interval.
+  // Volá se při puštění tlačítka, odjetí kurzorem nebo zrušení pointer události.
+  function stopMoving() {
+    if (holdDelayId !== null) {
+      clearTimeout(holdDelayId);
+      holdDelayId = null;
+    }
+
+    if (holdIntervalId !== null) {
+      clearInterval(holdIntervalId);
+      holdIntervalId = null;
+    }
+  }
+
+  // Spustí jednorázový posun a připraví opakované posouvání při držení.
+  function startMoving(event) {
+    event.preventDefault();
+    stopMoving();
+
+    moveSelectedElementBy(dx, dy);
+
+    holdDelayId = setTimeout(() => {
+      holdDelayId = null;
+      holdIntervalId = setInterval(() => {
+        moveSelectedElementBy(dx, dy);
+      }, MOVE_HOLD_INTERVAL_MS);
+    }, MOVE_HOLD_DELAY_MS);
+  }
+
+  button.addEventListener("pointerdown", startMoving);
+  button.addEventListener("pointerup", stopMoving);
+  button.addEventListener("pointerleave", stopMoving);
+  button.addEventListener("pointercancel", stopMoving);
+
+  // Když uživatel drží tlačítko a pustí myš mimo samotný button,
+  // globální listener zajistí zastavení posunu.
+  window.addEventListener("pointerup", stopMoving);
+  window.addEventListener("blur", stopMoving);
+}
+
+for (const [buttonId, dx, dy] of moveButtonSettings) {
+  registerMoveButton(buttonId, dx, dy);
+}
 
 // Přenese hodnoty z editačního formuláře zpět do vybraného prvku. 
 document.getElementById("btnApplyChanges").addEventListener("click", () => {

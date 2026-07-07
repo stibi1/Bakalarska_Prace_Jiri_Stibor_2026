@@ -4,12 +4,57 @@
   <meta charset="UTF-8">
   <title>PDF template editor</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    /*
+      Malý plovoucí otazník pro otevření uživatelského návodu.
+      Je přímo v index.html, aby kvůli této drobné funkci nebylo nutné měnit styles.css.
+    */
+    .help-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid #999;
+      background: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 1;
+      padding: 0;
+      margin: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .help-content {
+      padding: 16px 20px;
+      overflow-y: auto;
+      line-height: 1.45;
+    }
+
+    .help-content h4 {
+      margin-bottom: 6px;
+    }
+
+    .help-content ol,
+    .help-content ul {
+      padding-left: 22px;
+    }
+  </style>
 </head>
 <body>
 
+  <!--
+    Plovoucí tlačítko s otazníkem otevírá modal s uživatelským návodem.
+    Je oddělené od hlavního editoru, aby bylo dostupné odkudkoliv na stránce.
+  -->
+  <button id="btnOpenHelpModal" class="help-button" type="button" title="Návod k aplikaci">?</button>
+
+
   <h1>MVS Faktury</h1>
   <p class="muted">
-    MVP editor pro A4 šablony. Podporuje text, obdélník, čáru a image placeholder.
+    MVS editor pro A4 šablony. Podporuje text, obdélník, čáru a image placeholder.
   </p>
 
   <div class="page">
@@ -48,15 +93,19 @@
         <label for="elType">Typ</label>
         <input type="text" id="elType" readonly>
 
-        <div class="row">
-          <div>
-            <label for="elX">Pozice X</label>
-            <input type="number" id="elX">
-          </div>
-          <div>
-            <label for="elY">Pozice Y</label>
-            <input type="number" id="elY">
-          </div>
+        <!--
+          Přesné ruční zadávání souřadnic X/Y je ponechané jen jako skrytá
+          interní hodnota pro JavaScript. Běžný uživatel prvek posouvá tlačítky níže.
+        -->
+        <input type="hidden" id="elX">
+        <input type="hidden" id="elY">
+
+        <label>Posun prvku</label>
+        <div class="toolbar">
+          <button id="btnMoveUp" type="button">↑ Nahoru</button>
+          <button id="btnMoveDown" type="button">↓ Dolů</button>
+          <button id="btnMoveLeft" type="button">← Vlevo</button>
+          <button id="btnMoveRight" type="button">→ Vpravo</button>
         </div>
 
         <div class="row">
@@ -92,7 +141,15 @@
         </div>
 
         <label for="elColor">Barva</label>
-        <input type="text" id="elColor" value="#000000">
+        <input type="color" id="elColor" value="#000000" list="basicColors">
+        <datalist id="basicColors">
+          <option value="#000000">Černá</option>
+          <option value="#ffffff">Bílá</option>
+          <option value="#666666">Šedá</option>
+          <option value="#b00020">Červená</option>
+          <option value="#0a7d22">Zelená</option>
+          <option value="#0066cc">Modrá</option>
+        </datalist>
 
         <button id="btnApplyChanges">Použít změny</button>
         <button id="btnDeleteElement">Smazat prvek</button>
@@ -137,6 +194,57 @@
 
       <div class="table-wrap">
         <table id="previewTable"></table>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="helpModal" class="modal hidden">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>Návod k aplikaci</h3>
+        <div class="modal-actions">
+          <button id="btnCloseHelpModal" type="button">Zavřít</button>
+        </div>
+      </div>
+
+      <div class="modal-body help-content">
+        <h4>Práce s připravenou šablonou</h4>
+        <ol>
+          <li><strong>Nejprve načti data</strong> pomocí tlačítka „Načíst data“.</li>
+          <li><strong>Potom vyber složku s obrázky</strong>, pokud šablona používá logo, razítko nebo jiné obrázky.</li>
+          <li><strong>Nakonec načti šablonu</strong> ze souboru JSON.</li>
+          <li>Zkontroluj náhled na plátně a následně klikni na „Vygenerovat PDF“.</li>
+        </ol>
+        <p>
+          Tento postup je vhodný hlavně proto, že aplikace po načtení dat zná dostupné sloupce
+          a po výběru složky dokáže snadněji navázat obrázky uložené v šabloně.
+        </p>
+
+        <h4>Vytvoření nové šablony</h4>
+        <ol>
+          <li>Klikni na „Nová šablona“ a nastav orientaci stránky.</li>
+          <li>Pomocí tlačítek „Text“, „Obdélník“, „Čára“ a „Obrázek“ přidej prvky do stránky.</li>
+          <li>Vybraný prvek můžeš upravit v levém panelu. Tlačítka šipek posouvají prvek po malých krocích.</li>
+          <li>Do textových polí můžeš vkládat placeholdery podle načtených dat, například <code>{{col_0}}</code>.</li>
+          <li>Po dokončení klikni na „Uložit šablonu“ a ulož JSON soubor.</li>
+        </ol>
+
+        <h4>Šablony a obrázky</h4>
+        <ul>
+          <li>Pro každou používanou šablonu je vhodné držet JSON šablonu a její obrázky v jedné složce.</li>
+          <li>Obrázky nepřejmenovávej po vytvoření šablony. Šablona si pamatuje jejich názvy.</li>
+          <li>Když se šablona přesune na jiný počítač, přenes spolu s ní i všechny používané obrázky.</li>
+          <li>Po načtení šablony, která používá obrázky, vyber odpovídající složku tlačítkem „Vybrat složku s obrázky“.</li>
+        </ul>
+
+        <h4>Kontrola před exportem nebo odesláním</h4>
+        <ul>
+          <li>Zkontroluj, že se správně načetla tabulka dat.</li>
+          <li>Zkontroluj, že náhled PDF odpovídá očekávané podobě dokumentu.</li>
+          <li>Při ZIP exportu ověř nastavení názvu souborů, například <code>Faktura č {{col_0}}</code>.</li>
+          <li>Před hromadným odesláním e-mailů nejdřív otestuj výstup na malém vzorku dat.</li>
+        </ul>
       </div>
     </div>
   </div>
