@@ -140,8 +140,8 @@ project/
    ├─ app.js
    ├─ styles.css
    └─ fonts/
-      ├─ DejaVuSans.woff2
-      └─ DejaVuSans-Bold.woff2
+      ├─ DejaVuSans.ttf
+      └─ DejaVuSans-Bold.ttf
 ```
 
 Poznámka: `src/lib/assets/fonts/` slouží pro skutečné PDF generování na serveru. `public/fonts/` slouží pro to, aby canvasový náhled v prohlížeči používal stejný typ písma jako výsledné PDF.
