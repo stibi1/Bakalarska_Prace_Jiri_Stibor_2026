@@ -78,7 +78,7 @@ Pokud se diakritika načte špatně:
 Možné příčiny:
 
 - rozdílný font ve frontendu a backendu,
-- chybí `public/fonts/DejaVuSans.woff2`,
+- chybí `public/fonts/DejaVuSans.ttf`,
 - chybí `src/lib/assets/fonts/DejaVuSans.ttf`,
 - prohlížeč načetl starou verzi CSS/JS z cache.
 
