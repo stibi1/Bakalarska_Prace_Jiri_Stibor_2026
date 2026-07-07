@@ -1,12 +1,6 @@
 # PDF Template Editor - kompletní interní dokumentace
 Tento soubor slučuje hlavní README, podrobné dokumenty ze složky `docs/` a vzorové konfigurační soubory. Hodí se pro rychlé čtení na jednom místě. Pro GitHub repozitář je ale stále vhodné ponechat i samostatné soubory.
 
----
-
-
-
----
-
 ## Soubor `README.md`
 
 ## PDF Template Editor
