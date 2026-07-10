@@ -118,6 +118,7 @@ Na produkčním serveru je vhodnější použít `EnvironmentFile` v systemd slu
 project/
 ├─ package.json
 ├─ server.js
+├─knihovnauk-fakturacni-knihovna-0.1.0.tgz
 ├─ src/
 │  ├─ lib/
 │  │  ├─ assets/
