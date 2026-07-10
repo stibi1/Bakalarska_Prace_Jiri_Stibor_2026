@@ -50,7 +50,7 @@ project/
 | [`.gitignore`](.gitignore) | Interní `.gitignore`, který chrání `.env`, výstupy a závislosti. |
 | [`deploy/nginx/pdf-template-editor.conf`](deploy/nginx/pdf-template-editor.conf) | Vzor Nginx reverse proxy konfigurace. |
 | [`deploy/systemd/pdf-template-editor.service`](deploy/systemd/pdf-template-editor.service) | Vzor systemd služby. |
-| [`README_FULL.md`](README_FULL.md) | Jednosouborová verze dokumentace pro případ, že chcete mít vše na jednom místě. |
+| [`README_FULL.md`](README_FULL.md) | Jednosouborová verze dokumentace pro případ |
 
 ### Rychlá orientace pro nového zaměstnance
 
