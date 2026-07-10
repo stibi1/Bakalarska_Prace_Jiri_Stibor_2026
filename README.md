@@ -28,7 +28,7 @@ Tato dokumentace je psaná jako interní provozní manuál pro nové zaměstnanc
 | Potřeba | Kam jít |
 | --- | --- |
 | Chci aplikaci spustit lokálně. | Tato stránka, sekce [Rychlé spuštění lokálně](#rychlé-spuštění-lokálně). |
-| Chci vědět, co má být v `.env`. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) a [`.env.example`](.env.example). |
+| Chci vědět, co má být v `.env`. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) a [`.env.example`](env.example). |
 | Chci změnit sloupec, ze kterého se bere e-mail příjemce. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md), část „Změna sloupce pro e-mail příjemce“. |
 | Chci změnit výchozí text e-mailu nebo odesílatele. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). |
 | Chci aplikaci nasadit na Linux server. | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). |
