@@ -97,7 +97,7 @@ npm start
 
 ## Lokální spuštění s `.env`
 
-Aplikace používá proměnné prostředí, ale čistý Node.js sám od sebe soubor `.env` automaticky nenačítá. Soubor [`.env.example`](.env.example) proto slouží jako vzor.
+Aplikace používá proměnné prostředí, ale čistý Node.js sám od sebe soubor `.env` automaticky nenačítá. Soubor [`.env.example`](env.example) proto slouží jako vzor.
 
 Jednoduchý postup na Linuxu:
 
