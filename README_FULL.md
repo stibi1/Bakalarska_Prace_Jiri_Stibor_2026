@@ -46,7 +46,7 @@ project/
 | [`docs/OPERATIONS.md`](docs/OPERATIONS.md) | Běžná práce s aplikací, restart, logy, aktualizace a kontrolní seznamy. |
 | [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Nejčastější problémy a jejich řešení. |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | Bezpečnostní pravidla pro interní provoz. |
-| [`.env.example`](.env.example) | Vzor konfiguračního souboru s proměnnými prostředí. |
+| [`.env.example`](env.example) | Vzor konfiguračního souboru s proměnnými prostředí. |
 | [`.gitignore`](.gitignore) | Interní `.gitignore`, který chrání `.env`, výstupy a závislosti. |
 | [`deploy/nginx/pdf-template-editor.conf`](deploy/nginx/pdf-template-editor.conf) | Vzor Nginx reverse proxy konfigurace. |
 | [`deploy/systemd/pdf-template-editor.service`](deploy/systemd/pdf-template-editor.service) | Vzor systemd služby. |
@@ -57,7 +57,7 @@ project/
 | Potřeba | Kam jít |
 | --- | --- |
 | Chci aplikaci spustit lokálně. | Tato stránka, sekce [Rychlé spuštění lokálně](#rychlé-spuštění-lokálně). |
-| Chci vědět, co má být v `.env`. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) a [`.env.example`](.env.example). |
+| Chci vědět, co má být v `.env`. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) a [`.env.example`](env.example). |
 | Chci změnit sloupec, ze kterého se bere e-mail příjemce. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md), část „Změna sloupce pro e-mail příjemce“. |
 | Chci změnit výchozí text e-mailu nebo odesílatele. | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). |
 | Chci aplikaci nasadit na Linux server. | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). |
@@ -126,7 +126,7 @@ npm start
 
 ### Lokální spuštění s `.env`
 
-Aplikace používá proměnné prostředí, ale čistý Node.js sám od sebe soubor `.env` automaticky nenačítá. Soubor [`.env.example`](.env.example) proto slouží jako vzor.
+Aplikace používá proměnné prostředí, ale čistý Node.js sám od sebe soubor `.env` automaticky nenačítá. Soubor [`.env.example`](env.example) proto slouží jako vzor.
 
 Jednoduchý postup na Linuxu:
 
